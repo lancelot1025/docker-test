@@ -1,0 +1,53 @@
+version: "3.4"
+services:
+
+   nginx:
+     privileged: true
+     depends_on:
+       - frontend
+      #  - frontend_nginx
+     build: ./nginx
+    #  restart: always
+     ports:
+       - "80:80"
+      #  - "8099:8099"
+     volumes:
+       - type: bind
+         source: ../../Study
+         target: /home/frontend/Study
+       - type: bind
+         source: ../../Work
+         target: /home/frontend/Work
+       - type: bind
+         source: ./nginx/default.conf
+         target: /etc/nginx/conf.d/default.conf
+      #  - type: bind
+      #    source: ./nginx/vue.ui.conf
+      #    target: /etc/nginx/conf.d/vue.ui.conf
+     networks:
+       - frontend-network
+
+   frontend:
+     privileged: true
+     build: ./node
+    #  restart: always
+     ports:
+       - "4567:4567"
+     volumes:
+       - type: bind
+         source: ../../Study
+         target: /home/frontend/Study
+       - type: bind
+         source: ../../Work
+         target: /home/frontend/Work
+      #  - "webdata_work:/home/frontend/Work"
+      #  - "webdata_study:/home/frontend/Study"
+     networks:
+       - frontend-network
+
+# volumes:
+#   webdata_work:
+#   webdata_study:
+
+networks:
+  frontend-network:
